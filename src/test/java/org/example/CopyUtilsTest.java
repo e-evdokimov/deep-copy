@@ -5,10 +5,8 @@ import org.example.test.Empty;
 import org.example.test.Man;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.sql.Timestamp;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -33,7 +31,7 @@ class CopyUtilsTest {
     @Test
     void testArrayCopyInstantiation() {
         Object[] orig = {
-                null, 1, "test", new Empty(), new Empty[0]
+            null, 1, "test", new Empty(), new Empty[0]
         };
         Object[] copy = CopyUtils.deepCopy(orig);
         assertNotSame(orig, copy);
@@ -46,13 +44,13 @@ class CopyUtilsTest {
         Collection<Object> copy = CopyUtils.deepCopy(origList);
         assertEquals(origList, copy);
     }
-    
+
     @Test
     void testPrimitiveCopyInstantiation() {
         int copy = CopyUtils.deepCopy(1);
         assertEquals(1, copy);
     }
-    
+
     @Test
     void testStringCopyInstantiation() {
         String copy = CopyUtils.deepCopy("");
@@ -72,48 +70,42 @@ class CopyUtilsTest {
     void testNullMan() {
         Man orig = new Man(null, 0, null, null);
         Man copy = CopyUtils.deepCopy(orig);
-        assertNotSame(orig, copy);
-        assertEquals(orig, copy);
+        testAllAssertions(orig, copy);
     }
 
     @Test
     void testNewbornMan() {
         Man orig = new Man("name", 0, null, null);
         Man copy = CopyUtils.deepCopy(orig);
-        assertNotSame(orig, copy);
-        assertEquals(orig, copy);
+        testAllAssertions(orig, copy);
     }
 
     @Test
     void testEverLivingMan() {
         Man orig = new Man("name", Integer.MAX_VALUE, null, null);
         Man copy = CopyUtils.deepCopy(orig);
-        assertNotSame(orig, copy);
-        assertEquals(orig, copy);
+        testAllAssertions(orig, copy);
     }
 
     @Test
     void testImpossibleAgeMan() {
         Man orig = new Man("name", Integer.MIN_VALUE, null, null);
         Man copy = CopyUtils.deepCopy(orig);
-        assertNotSame(orig, copy);
-        assertEquals(orig, copy);
+        testAllAssertions(orig, copy);
     }
 
     @Test
     void testNonReaderMan() {
         Man orig = new Man("Alex", 20, new ArrayList<>(), null);
         Man copy = CopyUtils.deepCopy(orig);
-        assertNotSame(orig, copy);
-        assertEquals(orig, copy);
+        testAllAssertions(orig, copy);
     }
 
     @Test
     void testKnowItAllGuy() {
         Man orig = new Man("Alex", 20, getLibrary(), null);
         Man copy = CopyUtils.deepCopy(orig);
-        assertNotSame(orig, copy);
-        assertEquals(orig, copy);
+        testAllAssertions(orig, copy);
     }
 
     @Test
@@ -127,14 +119,41 @@ class CopyUtilsTest {
         orig.setFriends(List.of(friend1, friend2));
 
         Man copy = CopyUtils.deepCopy(orig);
-        assertNotSame(orig, copy);
-        assertEquals(orig, copy);
+        testAllAssertions(orig, copy);
+    }
+
+    @Test
+    void testCopyDate() {
+        Date orig = new Date();
+        Date copy = CopyUtils.deepCopy(orig);
+        testAllAssertions(orig, copy);
+    }
+
+    @Test
+    void testCopyTimestamp() {
+        Timestamp orig = new Timestamp(new Date().getTime());
+        orig.setNanos(123);
+        Timestamp copy = CopyUtils.deepCopy(orig);
+        testAllAssertions(orig, copy);
+    }
+
+    @Test
+    void testCopySqlDate() {
+        java.sql.Date orig = new java.sql.Date(new Date().getTime());
+        java.sql.Date copy = CopyUtils.deepCopy(orig);
+        testAllAssertions(orig, copy);
     }
 
     private List<String> getLibrary() {
         return IntStream.range(0, 10000)
-                .mapToObj(i -> RandomStringUtils.randomAlphabetic(10))
-                .collect(Collectors.toList());
+            .mapToObj(i -> RandomStringUtils.randomAlphabetic(10))
+            .collect(Collectors.toList());
+    }
+
+    private void testAllAssertions(Object orig, Object copy) {
+        assertSame(orig.getClass(), copy.getClass());
+        assertNotSame(orig, copy);
+        assertEquals(orig, copy);
     }
 
 }

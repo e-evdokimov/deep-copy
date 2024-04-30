@@ -55,7 +55,7 @@ public class DefaultCopier implements Copier {
         }
     }
 
-    private <T> T createNewInstance(Class<T> clazz) {
+    public static <T> T createNewInstance(Class<T> clazz) {
         ReflectionFactory rf = ReflectionFactory.getReflectionFactory();
 
         Constructor<Object> objCons = getObjectDefaultConstructor();

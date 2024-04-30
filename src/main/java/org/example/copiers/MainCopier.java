@@ -2,16 +2,19 @@ package org.example.copiers;
 
 import org.example.Copier;
 
-import java.util.Collection;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class MainCopier {
 
     private final Map<Object, Object> copyCache = new IdentityHashMap<>();
-
     private Object forCache;
+
+    private static final Map<Class<?>, Copier> copierRegistry = Map.of(
+        Collection.class, new CollectionCopier(),
+        Date.class, new DateCopier()
+    );
+    private static final Copier ARRAY_COPIER = new ArrayCopier();
+    private static final Copier DEFAULT_COPIER = new DefaultCopier();
 
 
     public <T> T copy(T original) {
@@ -44,15 +47,20 @@ public class MainCopier {
 
     private static Copier getCopier(Class<?> origClass) {
         if (origClass.isArray()) {
-            return new ArrayCopier();
+            return ARRAY_COPIER;
         }
-        if (Collection.class.isAssignableFrom(origClass)) {
-            return new CollectionCopier();
-        }
+
         // TODO Maps
         // TODO Enums
         // TODO Proxy
         // TODO etc., etc.
-        return new DefaultCopier();
+        return findCopier(origClass).orElse(DEFAULT_COPIER);
+    }
+
+    private static Optional<Copier> findCopier(Class<?> origClass) {
+        return copierRegistry.entrySet().stream()
+            .filter(e -> e.getKey().isAssignableFrom(origClass))
+            .map(Map.Entry::getValue)
+            .findFirst();
     }
 }
