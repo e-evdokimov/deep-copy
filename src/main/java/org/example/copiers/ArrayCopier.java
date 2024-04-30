@@ -1,14 +1,13 @@
 package org.example.copiers;
 
 import org.example.Copier;
-import org.example.CopyUtils;
 
 import java.lang.reflect.Array;
 
 public class ArrayCopier implements Copier {
 
     @Override
-    public <T> T copy(CopyUtils.MainCopier mainCopier, T from) {
+    public <T> T copy(MainCopier mainCopier, T from) {
         Object[] origArray = (Object[]) from;
 
         int len = origArray.length;
@@ -21,6 +20,6 @@ public class ArrayCopier implements Copier {
         }
 
         //noinspection unchecked
-        return (T)copy;
+        return (T) copy;
     }
 }

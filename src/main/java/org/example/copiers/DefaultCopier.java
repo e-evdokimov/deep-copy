@@ -2,7 +2,6 @@ package org.example.copiers;
 
 import org.example.Copier;
 import org.example.CopyException;
-import org.example.CopyUtils;
 import sun.reflect.ReflectionFactory;
 
 import java.lang.constant.Constable;
@@ -15,7 +14,7 @@ import java.util.function.Consumer;
 public class DefaultCopier implements Copier {
 
     @Override
-    public <T> T copy(CopyUtils.MainCopier mainCopier, T from) {
+    public <T> T copy(MainCopier mainCopier, T from) {
         Class<?> clazz = from.getClass();
 
         if (clazz.isPrimitive() || from instanceof Constable) {
@@ -31,9 +30,9 @@ public class DefaultCopier implements Copier {
                 int modifiers = f.getModifiers();
 
                 if (f.isSynthetic()
-                        || Modifier.isAbstract(modifiers)
-                        || Modifier.isTransient(modifiers)
-                        || Modifier.isStatic(modifiers)) {
+                    || Modifier.isAbstract(modifiers)
+                    || Modifier.isTransient(modifiers)
+                    || Modifier.isStatic(modifiers)) {
                     continue;
                 }
 
@@ -63,7 +62,8 @@ public class DefaultCopier implements Copier {
         Constructor<?> initConstr = rf.newConstructorForSerialization(clazz, objCons);
         try {
             return clazz.cast(initConstr.newInstance());
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
             throw new CopyException("Copying objects of type <" + clazz + "> is not supported", e);
         }
     }
