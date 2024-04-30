@@ -7,14 +7,11 @@ public class Man {
     private int age;
     private List<String> favoriteBooks;
 
-    private Man[] friends;
 
-
-    public Man(String name, int age, List<String> favoriteBooks, List<Man> friends) {
+    public Man(String name, int age, List<String> favoriteBooks) {
         this.name = name;
         this.age = age;
         this.favoriteBooks = favoriteBooks;
-        setFriends(friends);
     }
 
     public String getName() {
@@ -41,40 +38,31 @@ public class Man {
         this.favoriteBooks = favoriteBooks;
     }
 
-    public List<Man> getFriends() {
-        return Arrays.asList(friends);
-    }
-
-    public void setFriends(List<Man> friends) {
-        if (friends == null) {
-            this.friends = new Man[0];
-        } else {
-            this.friends = friends.toArray(new Man[0]);
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Man man = (Man) o;
         return age == man.age
-                && Objects.equals(name, man.name)
-                && Objects.equals(favoriteBooks, man.favoriteBooks);
+            && Objects.equals(name, man.name)
+            && Objects.equals(favoriteBooks, man.favoriteBooks);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, age, favoriteBooks);
+        int result = Integer.hashCode(age);
+        result = 31 * result + (name == null ? 0 : name.hashCode());
+        result = 31 * result + (favoriteBooks == null ? 0 : favoriteBooks.hashCode());
+        return result;
     }
 
     @Override
     public String toString() {
         return "Man{" +
-                "name='" + name + '\'' +
-                ", age=" + age +
-                ", favoriteBooks=" + favoriteBooks +
-                '}';
+            "name='" + name + '\'' +
+            ", age=" + age +
+            ", favoriteBooks=" + favoriteBooks +
+            '}';
     }
 
 }

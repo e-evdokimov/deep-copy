@@ -60,56 +60,43 @@ class CopyUtilsTest {
     @Test
     void testOrdinaryManNoFriends() {
         List<String> lib = new ArrayList<>(List.of("Book1", "Book2", "Book3"));
-        Man orig = new Man("name1", 20, lib, Collections.emptyList());
+        Man orig = new Man("name1", 20, lib);
         testDeepCopy(orig);
     }
 
     @Test
     void testNullMan() {
-        Man orig = new Man(null, 0, null, null);
+        Man orig = new Man(null, 0, null);
         testDeepCopy(orig);
     }
 
     @Test
     void testNewbornMan() {
-        Man orig = new Man("name", 0, null, null);
+        Man orig = new Man("name", 0, null);
         testDeepCopy(orig);
     }
 
     @Test
     void testEverLivingMan() {
-        Man orig = new Man("name", Integer.MAX_VALUE, null, null);
+        Man orig = new Man("name", Integer.MAX_VALUE, null);
         testDeepCopy(orig);
     }
 
     @Test
     void testImpossibleAgeMan() {
-        Man orig = new Man("name", Integer.MIN_VALUE, null, null);
+        Man orig = new Man("name", Integer.MIN_VALUE, null);
         testDeepCopy(orig);
     }
 
     @Test
     void testNonReaderMan() {
-        Man orig = new Man("Alex", 20, new ArrayList<>(), null);
+        Man orig = new Man("Alex", 20, new ArrayList<>());
         testDeepCopy(orig);
     }
 
     @Test
     void testKnowItAllGuy() {
-        Man orig = new Man("Alex", 20, getLibrary(), null);
-        testDeepCopy(orig);
-    }
-
-    @Test
-    void testManWithFriends() {
-        Man friend1 = new Man("Fred", 22, new ArrayList<>(List.of("Book1")), null);
-        Man friend2 = new Man("Lucy", 19, new ArrayList<>(List.of("Book2")), null);
-        Man orig = new Man("Alex", 20, new ArrayList<>(List.of("Book3")), null);
-
-        friend1.setFriends(List.of(friend2, orig));
-        friend2.setFriends(List.of(friend1, orig));
-        orig.setFriends(List.of(friend1, friend2));
-
+        Man orig = new Man("Alex", 20, getLibrary());
         testDeepCopy(orig);
     }
 
@@ -135,8 +122,8 @@ class CopyUtilsTest {
     @Test
     void testCopyHashMap() {
         List<String> lib = new ArrayList<>(List.of("Book1", "Book2", "Book3"));
-        Man man1 = new Man("name1", 20, lib, Collections.emptyList());
-        Man man2 = new Man("name1", 20, lib, Collections.emptyList());
+        Man man1 = new Man("name1", 20, lib);
+        Man man2 = new Man("name1", 20, lib);
         Map<Object, Object> orig = new HashMap<>(Map.of(
             1, 2,
             "1", "2",
@@ -150,7 +137,7 @@ class CopyUtilsTest {
         Map<Object, Object> orig = new TreeMap<>(Map.of(
             1, 2,
             2, "2",
-            3, new Man("Fred", 22, new ArrayList<>(List.of("Book1")), null)
+            3, new Man("Fred", 22, new ArrayList<>(List.of("Book1")))
         ));
         testDeepCopy(orig);
     }

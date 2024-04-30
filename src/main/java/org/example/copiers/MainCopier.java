@@ -51,7 +51,6 @@ public class MainCopier {
             return ARRAY_COPIER;
         }
 
-        // TODO Maps
         // TODO Enums
         // TODO Proxy
         // TODO etc., etc.
