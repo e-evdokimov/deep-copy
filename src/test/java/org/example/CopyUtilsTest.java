@@ -17,8 +17,7 @@ class CopyUtilsTest {
     @Test
     void testSimpleEmptyCopyInstantiation() {
         Empty empty = new Empty();
-        Empty copy = CopyUtils.deepCopy(empty);
-        assertNotSame(empty, copy);
+        testDeepCopy(empty);
     }
 
     @Test
@@ -34,15 +33,16 @@ class CopyUtilsTest {
             null, 1, "test", new Empty(), new Empty[0]
         };
         Object[] copy = CopyUtils.deepCopy(orig);
+
+        assertSame(orig.getClass(), copy.getClass());
         assertNotSame(orig, copy);
         assertArrayEquals(orig, copy);
     }
 
     @Test
     void testCollectionCopyInstantiation() {
-        List<Object> origList = new ArrayList<>();
-        Collection<Object> copy = CopyUtils.deepCopy(origList);
-        assertEquals(origList, copy);
+        List<Object> orig = new ArrayList<>();
+        testDeepCopy(orig);
     }
 
     @Test
@@ -61,51 +61,43 @@ class CopyUtilsTest {
     void testOrdinaryManNoFriends() {
         List<String> lib = new ArrayList<>(List.of("Book1", "Book2", "Book3"));
         Man orig = new Man("name1", 20, lib, Collections.emptyList());
-        Man copy = CopyUtils.deepCopy(orig);
-        assertNotSame(orig, copy);
-        assertEquals(orig, copy);
+        testDeepCopy(orig);
     }
 
     @Test
     void testNullMan() {
         Man orig = new Man(null, 0, null, null);
-        Man copy = CopyUtils.deepCopy(orig);
-        testAllAssertions(orig, copy);
+        testDeepCopy(orig);
     }
 
     @Test
     void testNewbornMan() {
         Man orig = new Man("name", 0, null, null);
-        Man copy = CopyUtils.deepCopy(orig);
-        testAllAssertions(orig, copy);
+        testDeepCopy(orig);
     }
 
     @Test
     void testEverLivingMan() {
         Man orig = new Man("name", Integer.MAX_VALUE, null, null);
-        Man copy = CopyUtils.deepCopy(orig);
-        testAllAssertions(orig, copy);
+        testDeepCopy(orig);
     }
 
     @Test
     void testImpossibleAgeMan() {
         Man orig = new Man("name", Integer.MIN_VALUE, null, null);
-        Man copy = CopyUtils.deepCopy(orig);
-        testAllAssertions(orig, copy);
+        testDeepCopy(orig);
     }
 
     @Test
     void testNonReaderMan() {
         Man orig = new Man("Alex", 20, new ArrayList<>(), null);
-        Man copy = CopyUtils.deepCopy(orig);
-        testAllAssertions(orig, copy);
+        testDeepCopy(orig);
     }
 
     @Test
     void testKnowItAllGuy() {
         Man orig = new Man("Alex", 20, getLibrary(), null);
-        Man copy = CopyUtils.deepCopy(orig);
-        testAllAssertions(orig, copy);
+        testDeepCopy(orig);
     }
 
     @Test
@@ -118,29 +110,53 @@ class CopyUtilsTest {
         friend2.setFriends(List.of(friend1, orig));
         orig.setFriends(List.of(friend1, friend2));
 
-        Man copy = CopyUtils.deepCopy(orig);
-        testAllAssertions(orig, copy);
+        testDeepCopy(orig);
     }
 
     @Test
     void testCopyDate() {
         Date orig = new Date();
-        Date copy = CopyUtils.deepCopy(orig);
-        testAllAssertions(orig, copy);
+        testDeepCopy(orig);
     }
 
     @Test
     void testCopyTimestamp() {
         Timestamp orig = new Timestamp(new Date().getTime());
         orig.setNanos(123);
-        Timestamp copy = CopyUtils.deepCopy(orig);
-        testAllAssertions(orig, copy);
+        testDeepCopy(orig);
     }
 
     @Test
     void testCopySqlDate() {
         java.sql.Date orig = new java.sql.Date(new Date().getTime());
-        java.sql.Date copy = CopyUtils.deepCopy(orig);
+        testDeepCopy(orig);
+    }
+
+    @Test
+    void testCopyHashMap() {
+        List<String> lib = new ArrayList<>(List.of("Book1", "Book2", "Book3"));
+        Man man1 = new Man("name1", 20, lib, Collections.emptyList());
+        Man man2 = new Man("name1", 20, lib, Collections.emptyList());
+        Map<Object, Object> orig = new HashMap<>(Map.of(
+            1, 2,
+            "1", "2",
+            man1, man2
+        ));
+        testDeepCopy(orig);
+    }
+
+    @Test
+    void testCopyTreeMap() {
+        Map<Object, Object> orig = new TreeMap<>(Map.of(
+            1, 2,
+            2, "2",
+            3, new Man("Fred", 22, new ArrayList<>(List.of("Book1")), null)
+        ));
+        testDeepCopy(orig);
+    }
+
+    private void testDeepCopy(Object orig) {
+        Object copy = CopyUtils.deepCopy(orig);
         testAllAssertions(orig, copy);
     }
 

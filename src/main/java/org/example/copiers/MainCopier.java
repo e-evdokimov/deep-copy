@@ -11,7 +11,8 @@ public class MainCopier {
 
     private static final Map<Class<?>, Copier> copierRegistry = Map.of(
         Collection.class, new CollectionCopier(),
-        Date.class, new DateCopier()
+        Date.class, new DateCopier(),
+        Map.class, new MapCopier()
     );
     private static final Copier ARRAY_COPIER = new ArrayCopier();
     private static final Copier DEFAULT_COPIER = new DefaultCopier();
